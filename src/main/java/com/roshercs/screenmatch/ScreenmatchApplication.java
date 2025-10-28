@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.roshercs.screenmatch.models.DataEpisode;
 import com.roshercs.screenmatch.models.DataSerie;
 import com.roshercs.screenmatch.service.ConsumeAPI;
 import com.roshercs.screenmatch.service.DataConverter;
@@ -30,6 +31,11 @@ public class ScreenmatchApplication implements CommandLineRunner{
 		DataConverter conversor=new DataConverter();
 		var data=conversor.obtainData(json, DataSerie.class);
 		System.out.println(data);
+
+		json=consumeAPI.getData("https://www.omdbapi.com/?t=the+big+bang+theory&Season=1&Episode=1&apikey=22d40db");
+		DataEpisode episode=conversor.obtainData(json, DataEpisode.class);
+		System.out.println(episode);
+
 		
 	}
 

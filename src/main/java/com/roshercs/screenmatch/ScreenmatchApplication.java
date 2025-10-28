@@ -4,7 +4,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.roshercs.screenmatch.models.DataSerie;
 import com.roshercs.screenmatch.service.ConsumeAPI;
+import com.roshercs.screenmatch.service.DataConverter;
 
 @SpringBootApplication
 public class ScreenmatchApplication implements CommandLineRunner{
@@ -25,6 +27,10 @@ public class ScreenmatchApplication implements CommandLineRunner{
 		var json=consumeAPI.getData("https://www.omdbapi.com/?t=Game+of+Thrones&apikey=22d40db");
 		System.out.println(json);
 
+		DataConverter conversor=new DataConverter();
+		var data=conversor.obtainData(json, DataSerie.class);
+		System.out.println(data);
+		
 	}
 
 }

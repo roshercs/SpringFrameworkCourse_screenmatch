@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.roshercs.screenmatch.main.Main;
 import com.roshercs.screenmatch.models.DataEpisode;
 import com.roshercs.screenmatch.models.DataSeason;
 import com.roshercs.screenmatch.models.DataSerie;
@@ -24,8 +25,11 @@ public class ScreenmatchApplication implements CommandLineRunner{
 	public void run(String... args) throws Exception {
 		//can make the first steps at beginning
 		//System.out.println("Hello World!");
-		//throw new UnsupportedOperationException("Unimplemented method 'run'");
+
+		Main main=new Main();
+		main.showMenu();
 		
+		/*  REFACTOR
 		//var auto detects the data type
 		var consumeAPI=new ConsumeAPI();
 
@@ -48,7 +52,7 @@ public class ScreenmatchApplication implements CommandLineRunner{
 			seasons.add(dataSeasons);
 		}
 		seasons.forEach(System.out::println);
-		
+		*/
 	}
 
 }

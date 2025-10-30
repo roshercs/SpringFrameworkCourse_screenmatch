@@ -1,10 +1,14 @@
 package com.roshercs.screenmatch;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.roshercs.screenmatch.models.DataEpisode;
+import com.roshercs.screenmatch.models.DataSeason;
 import com.roshercs.screenmatch.models.DataSerie;
 import com.roshercs.screenmatch.service.ConsumeAPI;
 import com.roshercs.screenmatch.service.DataConverter;
@@ -36,6 +40,14 @@ public class ScreenmatchApplication implements CommandLineRunner{
 		DataEpisode episode=conversor.obtainData(json, DataEpisode.class);
 		System.out.println(episode);
 
+		
+		List<DataSeason> seasons=new ArrayList<>();
+		for(int i=1;i<=data.seasons();i++){
+			json=consumeAPI.getData("https://www.omdbapi.com/?t=the+big+bang+theory&Season="+i+"&apikey=22d40db");
+			var dataSeasons=conversor.obtainData(json, DataSeason.class); 
+			seasons.add(dataSeasons);
+		}
+		seasons.forEach(System.out::println);
 		
 	}
 

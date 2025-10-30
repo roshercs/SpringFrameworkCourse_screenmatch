@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import com.roshercs.screenmatch.models.DataEpisode;
 import com.roshercs.screenmatch.models.DataSeason;
 import com.roshercs.screenmatch.models.DataSerie;
 import com.roshercs.screenmatch.service.ConsumeAPI;
@@ -33,5 +34,18 @@ public class Main {
 		}
 		seasons.forEach(System.out::println);
 
+        //Only print Episodes Title of each Season, clasic solution
+        for (int i = 0; i < data.seasons(); i++) {
+            System.out.println("Season "+(i+1)+": ");
+            List<DataEpisode> episodesSeasons=seasons.get(i).episodes();
+            for (int j = 0; j < episodesSeasons.size(); j++) {
+                System.out.println("\t"+episodesSeasons.get(j).title());
+            }
+        }
+        System.out.println("----------------------------------");
+        //Only print Episodes Title of each Season, lanbda functions solution
+        seasons.forEach(season -> {System.out.println("Season "+season.season()+":");
+            season.episodes().forEach(episode -> System.out.println("\t"+episode.title()));}
+        );
     }
 }

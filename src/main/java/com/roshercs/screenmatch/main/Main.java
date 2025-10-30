@@ -44,8 +44,9 @@ public class Main {
         }
         System.out.println("----------------------------------");
         //Only print Episodes Title of each Season, lanbda functions solution
-        seasons.forEach(season -> {System.out.println("Season "+season.season()+":");
-            season.episodes().forEach(episode -> System.out.println("\t"+episode.title()));}
-        );
+        seasons.forEach(season -> {System.out.println("Season "+season.season()+":"); season.episodes().forEach(episode -> System.out.println("\t"+episode.title()));});
+
+
+        
     }
 }

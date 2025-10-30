@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.roshercs.screenmatch.main.ExampleStreams;
 import com.roshercs.screenmatch.main.Main;
 
 @SpringBootApplication
@@ -20,7 +21,12 @@ public class ScreenmatchApplication implements CommandLineRunner{
 		//System.out.println("Hello World!");
 
 		Main main=new Main();
-		main.showMenu();
+		//main.showMenu();
+		
+
+		//Operations with stream
+		ExampleStreams exampleStream=new ExampleStreams();
+		exampleStream.exampleStream();
 		
 		/*  REFACTOR
 		//var auto detects the data type

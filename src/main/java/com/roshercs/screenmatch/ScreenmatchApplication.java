@@ -1,18 +1,11 @@
 package com.roshercs.screenmatch;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.roshercs.screenmatch.main.Main;
-import com.roshercs.screenmatch.models.DataEpisode;
-import com.roshercs.screenmatch.models.DataSeason;
-import com.roshercs.screenmatch.models.DataSerie;
-import com.roshercs.screenmatch.service.ConsumeAPI;
-import com.roshercs.screenmatch.service.DataConverter;
 
 @SpringBootApplication
 public class ScreenmatchApplication implements CommandLineRunner{

@@ -21,12 +21,13 @@ public class ScreenmatchApplication implements CommandLineRunner{
 		//System.out.println("Hello World!");
 
 		Main main=new Main();
-		//main.showMenu();
+		main.showMenu();
 		
 
 		//Operations with stream
 		ExampleStreams exampleStream=new ExampleStreams();
-		exampleStream.exampleStream();
+		//exampleStream.exampleStream();
+		
 		
 		/*  REFACTOR
 		//var auto detects the data type

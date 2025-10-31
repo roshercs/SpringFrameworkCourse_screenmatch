@@ -1,8 +1,11 @@
 package com.roshercs.screenmatch.main;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import com.roshercs.screenmatch.models.DataEpisode;
 import com.roshercs.screenmatch.models.DataSeason;
@@ -32,7 +35,7 @@ public class Main {
 			var dataSeasons=conversor.obtainData(json, DataSeason.class); 
 			seasons.add(dataSeasons);
 		}
-		seasons.forEach(System.out::println);
+		//seasons.forEach(System.out::println);
 
         //Only print Episodes Title of each Season, clasic solution
         for (int i = 0; i < data.seasons(); i++) {
@@ -44,9 +47,20 @@ public class Main {
         }
         System.out.println("----------------------------------");
         //Only print Episodes Title of each Season, lanbda functions solution
-        seasons.forEach(season -> {System.out.println("Season "+season.season()+":"); season.episodes().forEach(episode -> System.out.println("\t"+episode.title()));});
+        //seasons.forEach(season -> {System.out.println("Season "+season.season()+":"); season.episodes().forEach(episode -> System.out.println("\t"+episode.title()));});
 
-
+        //Data Conversion to a single list Data-Episode
+        List<DataEpisode> dataEpisodes=seasons.stream()
+            .flatMap(s -> s.episodes().stream())
+            .collect(Collectors.toList());
+            //.toList()   inmutable list
+        dataEpisodes.stream()
+            .filter(e-> !e.evaluation().equals("N/A"))
+            .sorted(Comparator.comparing(DataEpisode::evaluation).reversed())
+            .limit(5)
+            .forEach(System.out::println);
+            
         
+
     }
 }

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import com.roshercs.screenmatch.models.DataEpisode;
 import com.roshercs.screenmatch.models.DataSeason;
 import com.roshercs.screenmatch.models.DataSerie;
+import com.roshercs.screenmatch.models.Episode;
 import com.roshercs.screenmatch.service.ConsumeAPI;
 import com.roshercs.screenmatch.service.DataConverter;
 
@@ -59,8 +60,15 @@ public class Main {
             .sorted(Comparator.comparing(DataEpisode::evaluation).reversed())
             .limit(5)
             .forEach(System.out::println);
-            
         
+
+        //Data modeling to a Episode List
+        List<Episode> episodes= seasons.stream()
+            .flatMap(s-> s.episodes().stream()
+                .map(de -> new Episode(s.season(),de))
+            )
+            .collect(Collectors.toList());
+        episodes.forEach(System.out::println);
 
     }
 }

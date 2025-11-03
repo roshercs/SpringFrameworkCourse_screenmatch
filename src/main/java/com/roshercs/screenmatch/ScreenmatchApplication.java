@@ -5,7 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.roshercs.screenmatch.main.ExampleStreams;
+//import com.roshercs.screenmatch.main.ExampleStreams;
 import com.roshercs.screenmatch.main.Main;
 
 @SpringBootApplication
@@ -25,7 +25,7 @@ public class ScreenmatchApplication implements CommandLineRunner{
 		
 
 		//Operations with stream
-		ExampleStreams exampleStream=new ExampleStreams();
+		//ExampleStreams exampleStream=new ExampleStreams();
 		//exampleStream.exampleStream();
 		
 		

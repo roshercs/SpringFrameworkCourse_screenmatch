@@ -1,11 +1,16 @@
 package com.roshercs.screenmatch.main;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import org.springframework.cglib.core.Local;
 
 import com.roshercs.screenmatch.models.DataEpisode;
 import com.roshercs.screenmatch.models.DataSeason;
@@ -70,5 +75,19 @@ public class Main {
             .collect(Collectors.toList());
         episodes.forEach(System.out::println);
 
+        //Episode Search by Date:
+        System.out.println("Enter the year of starting point to search:");
+        var year=keyboard.nextInt();
+        keyboard.nextLine();
+
+        LocalDate searchDate=LocalDate.of(year, 1, 1);
+        DateTimeFormatter dtf=DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        episodes.stream()
+            .filter(e -> e.getRealeseDate()!=null && e.getRealeseDate().isAfter(searchDate))
+            .forEach(e-> System.out.println(
+                "Season: "+e.getSeason()+
+                "  Episode: "+e.getEpisodeNum()+
+                "  Realesed Date: "+e.getRealeseDate().format(dtf)
+            ));
     }
 }

@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -59,11 +60,11 @@ public class Main {
             //.toList()   inmutable list
         dataEpisodes.stream()
             .filter(e-> !e.evaluation().equals("N/A"))
-            .peek(e -> System.out.println("First Filter (N/A): "+e))
+            //.peek(e -> System.out.println("First Filter (N/A): "+e))
             .sorted(Comparator.comparing(DataEpisode::evaluation).reversed())
-            .peek(e -> System.out.println("Second Filter (M>m): "+e))
+            //.peek(e -> System.out.println("Second Filter (M>m): "+e))
             .map(e-> e.title().toUpperCase())
-            .peek(e -> System.out.println("Third Fitler Mayusc: "+e))
+            //.peek(e -> System.out.println("Third Fitler Mayusc: "+e))
             .limit(5)
             .forEach(System.out::println);
         
@@ -90,5 +91,20 @@ public class Main {
                 "  Episode: "+e.getEpisodeNum()+
                 "  Realesed Date: "+e.getRealeseDate().format(dtf)
             ));
+
+        //Episode Search by Coincidence of Title
+        System.out.println("Enter the episode title to search: ");
+        var partialTitle=keyboard.nextLine();
+
+        Optional<Episode> resultEpisode = episodes.stream()
+            .filter(e -> e.getTitle().toUpperCase().contains(partialTitle.toUpperCase()))
+            .findFirst();
+        if(resultEpisode.isPresent()){
+            System.out.println("Result: ");
+            System.out.println(resultEpisode.get());
+        }else{
+            System.out.println("Episode not founded");
+        }
+        
     }
 }

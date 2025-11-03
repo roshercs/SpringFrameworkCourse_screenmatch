@@ -59,7 +59,11 @@ public class Main {
             //.toList()   inmutable list
         dataEpisodes.stream()
             .filter(e-> !e.evaluation().equals("N/A"))
+            .peek(e -> System.out.println("First Filter (N/A): "+e))
             .sorted(Comparator.comparing(DataEpisode::evaluation).reversed())
+            .peek(e -> System.out.println("Second Filter (M>m): "+e))
+            .map(e-> e.title().toUpperCase())
+            .peek(e -> System.out.println("Third Fitler Mayusc: "+e))
             .limit(5)
             .forEach(System.out::println);
         

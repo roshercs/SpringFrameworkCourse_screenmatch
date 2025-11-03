@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -105,6 +107,20 @@ public class Main {
         }else{
             System.out.println("Episode not founded");
         }
+
+        Map<Integer,Double> evaluationSeason=episodes.stream()
+            .filter(e-> e.getEvaluation()>0.0)
+            .collect(Collectors.groupingBy(Episode:: getSeason,Collectors.averagingDouble(Episode::getEvaluation)));
         
+        System.out.println(evaluationSeason);
+
+        DoubleSummaryStatistics sta=episodes.stream()
+            .filter(e-> e.getEvaluation()>0.0)
+            .collect(Collectors.summarizingDouble(Episode::getEvaluation));
+        
+        System.out.println(sta);
+        System.out.println("Average: "+ sta.getAverage());
+        System.out.println("Best Episode: "+sta.getMax());
+        System.out.println("Worst Episode: "+sta.getMin());
     }
 }

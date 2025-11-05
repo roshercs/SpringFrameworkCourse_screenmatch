@@ -26,34 +26,71 @@ public class Main {
     private final String url_base="https://www.omdbapi.com/?t=";
     private final String API_KEY="&apikey=22d40db";
     
+    private List<DataSerie> dataSeries=new ArrayList<>();
+
     public void showMenu() {
+        var option=-1;
+        while(option!=0){
+            var menu="""
+                    1. Search Serie
+                    2. Search Episode
+                    3. Show Searched Series
+                    0. Exit
+                    """;
+            System.out.println(menu);
+            option=keyboard.nextInt();
+            keyboard.nextLine();
+            switch (option) {
+                case 1:
+                    searchSerie();
+                    break;
+                case 2:
+                    searchEpisodesSerie();
+                    break;
+                case 3:
+                    showSearchedSeries();
+                    break;
+                case 0:
+                    System.out.println("Closing application...");
+                    break;
+                default:
+                    System.out.println("Invalid Option");
+                    break;
+            }
+        }
+    }
+
+
+    private DataSerie getDataSerie(){
         //General Series Data
         System.out.println("Please, enter the name of serie to seach: ");
         var serieName=keyboard.nextLine();
         var json=consumeAPI.getData(url_base+serieName.replace(" ","+")+API_KEY);
         var data=conversor.obtainData(json, DataSerie.class);
         System.out.println(data);
+        return data;
+    }
 
+    private void searchEpisodesSerie(){
+        DataSerie dataSerie=getDataSerie();
         //Obtain Data of all Seasons
         List<DataSeason> seasons=new ArrayList<>();
-		for(int i=1;i<=data.seasons();i++){
-			json=consumeAPI.getData(url_base+serieName.replace(" ", "+")+"&Season="+i+API_KEY);
+
+		for(int i=1;i<=dataSerie.seasons();i++){
+			var json=consumeAPI.getData(url_base+dataSerie.title().replace(" ", "+")+"&Season="+i+API_KEY);
 			var dataSeasons=conversor.obtainData(json, DataSeason.class); 
 			seasons.add(dataSeasons);
 		}
-		//seasons.forEach(System.out::println);
+        seasons.forEach(System.out::println);
 
-        //Only print Episodes Title of each Season, clasic solution
-        for (int i = 0; i < data.seasons(); i++) {
-            System.out.println("Season "+(i+1)+": ");
-            List<DataEpisode> episodesSeasons=seasons.get(i).episodes();
-            for (int j = 0; j < episodesSeasons.size(); j++) {
-                System.out.println("\t"+episodesSeasons.get(j).title());
-            }
-        }
-        System.out.println("----------------------------------");
-        //Only print Episodes Title of each Season, lanbda functions solution
-        //seasons.forEach(season -> {System.out.println("Season "+season.season()+":"); season.episodes().forEach(episode -> System.out.println("\t"+episode.title()));});
+
+        //Data modeling to a Episode List
+        List<Episode> episodes= seasons.stream()
+            .flatMap(s-> s.episodes().stream()
+                .map(de -> new Episode(s.season(),de))
+            )
+            .collect(Collectors.toList());
+        episodes.forEach(System.out::println);
 
         //Data Conversion to a single list Data-Episode
         List<DataEpisode> dataEpisodes=seasons.stream()
@@ -69,15 +106,6 @@ public class Main {
             //.peek(e -> System.out.println("Third Fitler Mayusc: "+e))
             .limit(5)
             .forEach(System.out::println);
-        
-
-        //Data modeling to a Episode List
-        List<Episode> episodes= seasons.stream()
-            .flatMap(s-> s.episodes().stream()
-                .map(de -> new Episode(s.season(),de))
-            )
-            .collect(Collectors.toList());
-        episodes.forEach(System.out::println);
 
         //Episode Search by Date:
         System.out.println("Enter the year of starting point to search:");
@@ -122,5 +150,16 @@ public class Main {
         System.out.println("Average: "+ sta.getAverage());
         System.out.println("Best Episode: "+sta.getMax());
         System.out.println("Worst Episode: "+sta.getMin());
+    }
+
+    public void searchSerie(){
+        DataSerie dataSerie=getDataSerie();
+        dataSeries.add(dataSerie);
+
+        System.out.println(dataSerie);
+    }
+
+    private void showSearchedSeries() {
+        dataSeries.forEach(System.out::println);
     }
 }

@@ -2,6 +2,8 @@ package com.roshercs.screenmatch.models;
 
 import java.util.Optional;
 
+import com.roshercs.screenmatch.service.ConsultChatGPT;
+
 
 public class Serie {
     private String title;
@@ -15,7 +17,7 @@ public class Serie {
     public Serie(DataSerie dataSerie) {
         this.title=dataSerie.title();
         this.evaluation=Optional.of(Double.valueOf(dataSerie.evaluation())).orElse(0.0);
-        this.sinopsis=dataSerie.sinopsis();
+        this.sinopsis= ConsultChatGPT.requestTraduction(dataSerie.sinopsis());
         this.poster=dataSerie.poster();
         this.actors=dataSerie.actors();
         this.genre=SerieCategory.fromString(dataSerie.genre().split(",")[0].trim());

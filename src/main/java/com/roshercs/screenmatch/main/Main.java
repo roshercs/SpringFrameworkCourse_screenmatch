@@ -1,13 +1,13 @@
 package com.roshercs.screenmatch.main;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+//import java.time.LocalDate;
+//import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.DoubleSummaryStatistics;
+//import java.util.DoubleSummaryStatistics;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+//import java.util.Map;
+//import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -16,6 +16,7 @@ import com.roshercs.screenmatch.models.DataEpisode;
 import com.roshercs.screenmatch.models.DataSeason;
 import com.roshercs.screenmatch.models.DataSerie;
 import com.roshercs.screenmatch.models.Episode;
+import com.roshercs.screenmatch.models.Serie;
 import com.roshercs.screenmatch.service.ConsumeAPI;
 import com.roshercs.screenmatch.service.DataConverter;
 
@@ -73,6 +74,7 @@ public class Main {
 
     private void searchEpisodesSerie(){
         DataSerie dataSerie=getDataSerie();
+        if(dataSerie.title()==null){System.out.println("Serie not founded");return;}
         //Obtain Data of all Seasons
         List<DataSeason> seasons=new ArrayList<>();
 
@@ -106,7 +108,7 @@ public class Main {
             //.peek(e -> System.out.println("Third Fitler Mayusc: "+e))
             .limit(5)
             .forEach(System.out::println);
-
+        /*
         //Episode Search by Date:
         System.out.println("Enter the year of starting point to search:");
         var year=keyboard.nextInt();
@@ -149,11 +151,12 @@ public class Main {
         System.out.println(sta);
         System.out.println("Average: "+ sta.getAverage());
         System.out.println("Best Episode: "+sta.getMax());
-        System.out.println("Worst Episode: "+sta.getMin());
+        System.out.println("Worst Episode: "+sta.getMin());*/
     }
 
     public void searchSerie(){
         DataSerie dataSerie=getDataSerie();
+        if(dataSerie.title()==null){System.out.println("Serie not founded");return;}
         dataSeries.add(dataSerie);
 
         System.out.println(dataSerie);
@@ -161,5 +164,15 @@ public class Main {
 
     private void showSearchedSeries() {
         dataSeries.forEach(System.out::println);
+
+        System.out.println("Sorted by Genre: ");
+        List<Serie> series=new ArrayList<>();
+        series=dataSeries.stream()
+            .map(de -> new Serie(de))
+            .collect(Collectors.toList());
+        series.stream()
+            .sorted(Comparator.comparing(Serie::getGenre))
+            .forEach(System.out::println);
+            
     }
 }

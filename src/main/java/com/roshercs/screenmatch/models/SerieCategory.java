@@ -1,5 +1,6 @@
 package com.roshercs.screenmatch.models;
 
+
 public enum SerieCategory {
     ACTION("Action"),
     ROMANCE("Romance"),
@@ -13,4 +14,12 @@ public enum SerieCategory {
         this.categoryOmdb = categoryOmdb;
     }
     
+    public static SerieCategory fromString(String text){
+        for(SerieCategory category: SerieCategory.values()){
+            if(category.categoryOmdb.equalsIgnoreCase(text)){
+                return category;
+            }
+        }
+        throw new IllegalArgumentException("None category founded: "+text);
+    }
 }

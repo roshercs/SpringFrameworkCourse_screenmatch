@@ -8,8 +8,9 @@ import com.openai.models.chat.completions.ChatCompletionCreateParams;
 
 public class ConsultChatGPT {
     public static String requestTraduction(String texto){
+        String key= System.getenv("OPENAI_API_KEY");
         OpenAIClient client = OpenAIOkHttpClient.builder()
-            .apiKey("false_key")
+            .apiKey(key)
             .build();
 
 

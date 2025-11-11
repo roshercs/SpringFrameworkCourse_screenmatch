@@ -17,6 +17,7 @@ import com.roshercs.screenmatch.models.DataSeason;
 import com.roshercs.screenmatch.models.DataSerie;
 import com.roshercs.screenmatch.models.Episode;
 import com.roshercs.screenmatch.models.Serie;
+import com.roshercs.screenmatch.repository.SerieRepository;
 import com.roshercs.screenmatch.service.ConsumeAPI;
 import com.roshercs.screenmatch.service.DataConverter;
 
@@ -28,6 +29,12 @@ public class Main {
     private final String API_KEY="&apikey=22d40db";
     
     private List<DataSerie> dataSeries=new ArrayList<>();
+    private SerieRepository repository;
+
+    public Main(SerieRepository repository) {
+        this.repository=repository;
+    }
+
 
     public void showMenu() {
         var option=-1;
@@ -156,14 +163,19 @@ public class Main {
 
     public void searchSerie(){
         DataSerie dataSerie=getDataSerie();
-        if(dataSerie.title()==null){System.out.println("Serie not founded");return;}
-        dataSeries.add(dataSerie);
-
+        //if(dataSerie.title()==null){System.out.println("Serie not founded");return;}
+        //dataSeries.add(dataSerie);
+        Serie serie=new Serie(dataSerie);
+        repository.save(serie);
         System.out.println(dataSerie);
     }
 
     private void showSearchedSeries() {
-        dataSeries.forEach(System.out::println);
+        List<Serie> series=repository.findAll();
+        series.stream()
+            .sorted(Comparator.comparing(Serie::getGenre))
+            .forEach(System.out::println);
+        /*dataSeries.forEach(System.out::println);
 
         System.out.println("Sorted by Genre: ");
         List<Serie> series=new ArrayList<>();
@@ -173,6 +185,6 @@ public class Main {
         series.stream()
             .sorted(Comparator.comparing(Serie::getGenre))
             .forEach(System.out::println);
-            
+        */
     }
 }

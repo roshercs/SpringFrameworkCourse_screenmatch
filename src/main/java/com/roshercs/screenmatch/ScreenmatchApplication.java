@@ -1,16 +1,19 @@
 package com.roshercs.screenmatch;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 //import com.roshercs.screenmatch.main.ExampleStreams;
 import com.roshercs.screenmatch.main.Main;
+import com.roshercs.screenmatch.repository.SerieRepository;
 
 @SpringBootApplication
 public class ScreenmatchApplication implements CommandLineRunner{
-
+	@Autowired
+	private SerieRepository repository;
 	public static void main(String[] args) {
 		SpringApplication.run(ScreenmatchApplication.class, args);
 	}
@@ -20,7 +23,7 @@ public class ScreenmatchApplication implements CommandLineRunner{
 		//can make the first steps at beginning
 		//System.out.println("Hello World!");
 
-		Main main=new Main();
+		Main main=new Main(repository);
 		main.showMenu();
 		
 

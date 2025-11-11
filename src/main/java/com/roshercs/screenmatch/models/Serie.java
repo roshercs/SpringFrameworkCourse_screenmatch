@@ -3,15 +3,18 @@ package com.roshercs.screenmatch.models;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+//import jakarta.persistence.Transient;
 
 
 //import com.roshercs.screenmatch.service.ConsultChatGPT;
@@ -32,7 +35,7 @@ public class Serie {
     private String poster;
     private String actors;
 
-    @Transient 
+    @OneToMany(mappedBy = "serie",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Episode> episodes;
 
     
@@ -43,6 +46,7 @@ public class Serie {
         this.title=dataSerie.title();
         this.evaluation=Optional.of(Double.valueOf(dataSerie.evaluation())).orElse(0.0);
         //this.sinopsis= ConsultChatGPT.requestTraduction(dataSerie.sinopsis());
+        this.seasons=dataSerie.seasons();
         this.sinopsis= dataSerie.sinopsis();
         this.poster=dataSerie.poster();
         this.actors=dataSerie.actors();
@@ -107,7 +111,9 @@ public class Serie {
     
     @Override
     public String toString() {
-        return "[genre=" + genre +", title=" + title + ", seasons=" + seasons + ", evaluation=" + evaluation + ", sinopsis=" + sinopsis + ", poster=" + poster + ", actors=" + actors + "]";
+        return "[genre=" + genre +", title=" + title + ", seasons=" + seasons + 
+            ", evaluation=" + evaluation + ", sinopsis=" + sinopsis + ", poster=" + poster + 
+            ", actors=" + actors + ",episodes= "+ episodes +"]";
     }
 
     public Long getId() {
@@ -116,6 +122,15 @@ public class Serie {
 
     public void setId(Long id) {
         Id = id;
+    }
+
+    public List<Episode> getEpisodes() {
+        return episodes;
+    }
+
+    public void setEpisodes(List<Episode> episodes) {
+        episodes.forEach(e-> e.setSerie(this));
+        this.episodes = episodes;
     }
     
     

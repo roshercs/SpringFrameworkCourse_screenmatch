@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 //import java.util.DoubleSummaryStatistics;
 import java.util.List;
+import java.util.Optional;
 //import java.util.Map;
 //import java.util.Optional;
 import java.util.Scanner;
@@ -27,12 +28,14 @@ public class Main {
     private DataConverter conversor=new DataConverter();
     private final String url_base="https://www.omdbapi.com/?t=";
     private final String API_KEY="&apikey=22d40db";
-    
+    List<Serie> series;
+
     private List<DataSerie> dataSeries=new ArrayList<>();
     private SerieRepository repository;
 
     public Main(SerieRepository repository) {
         this.repository=repository;
+        this.series=repository.findAll();
     }
 
 
@@ -75,32 +78,46 @@ public class Main {
         var serieName=keyboard.nextLine();
         var json=consumeAPI.getData(url_base+serieName.replace(" ","+")+API_KEY);
         var data=conversor.obtainData(json, DataSerie.class);
-        System.out.println(data);
+        //System.out.println(data);
         return data;
     }
 
     private void searchEpisodesSerie(){
-        DataSerie dataSerie=getDataSerie();
-        if(dataSerie.title()==null){System.out.println("Serie not founded");return;}
+        //DataSerie dataSerie=getDataSerie();
+        System.out.println("The series currently available: ");
+        showSearchedSeries();
+        System.out.println("\n\n\nType the serie whose episodes you want to watch:");
+        var serieName=keyboard.nextLine();
+
+        Optional<Serie> serie=series.stream()
+            .filter(s -> s.getTitle().toLowerCase().contains(serieName.toLowerCase()))
+            .findFirst();
+        if(!serie.isPresent()){
+            System.out.println("Serie not founded...");
+            return;
+        }
+        var dataSerie=serie.get();
+        if(dataSerie.getTitle()==null){System.out.println("Serie not founded");return;}
         //Obtain Data of all Seasons
         List<DataSeason> seasons=new ArrayList<>();
-
-		for(int i=1;i<=dataSerie.seasons();i++){
-			var json=consumeAPI.getData(url_base+dataSerie.title().replace(" ", "+")+"&Season="+i+API_KEY);
+        
+		for(int i=1;i<=dataSerie.getSeasons();i++){
+			var json=consumeAPI.getData(url_base+dataSerie.getTitle().replace(" ", "+")+"&Season="+i+API_KEY);
 			var dataSeasons=conversor.obtainData(json, DataSeason.class); 
 			seasons.add(dataSeasons);
 		}
-        seasons.forEach(System.out::println);
+        //seasons.forEach(System.out::println);
 
 
         //Data modeling to a Episode List
         List<Episode> episodes= seasons.stream()
             .flatMap(s-> s.episodes().stream()
-                .map(de -> new Episode(s.season(),de))
-            )
+                .map(de -> new Episode(s.season(),de)))
             .collect(Collectors.toList());
         episodes.forEach(System.out::println);
-
+        dataSerie.setEpisodes(episodes);
+        repository.save(dataSerie);
+        /*
         //Data Conversion to a single list Data-Episode
         List<DataEpisode> dataEpisodes=seasons.stream()
             .flatMap(s -> s.episodes().stream())
@@ -158,7 +175,7 @@ public class Main {
         System.out.println(sta);
         System.out.println("Average: "+ sta.getAverage());
         System.out.println("Best Episode: "+sta.getMax());
-        System.out.println("Worst Episode: "+sta.getMin());*/
+        System.out.println("Worst Episode: "+sta.getMin());*/ 
     }
 
     public void searchSerie(){
@@ -166,12 +183,13 @@ public class Main {
         //if(dataSerie.title()==null){System.out.println("Serie not founded");return;}
         //dataSeries.add(dataSerie);
         Serie serie=new Serie(dataSerie);
+        //System.out.println(serie);
         repository.save(serie);
-        System.out.println(dataSerie);
+        System.out.println(serie);
     }
 
     private void showSearchedSeries() {
-        List<Serie> series=repository.findAll();
+        series=repository.findAll();
         series.stream()
             .sorted(Comparator.comparing(Serie::getGenre))
             .forEach(System.out::println);

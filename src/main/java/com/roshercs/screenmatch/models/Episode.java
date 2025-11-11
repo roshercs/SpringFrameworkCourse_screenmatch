@@ -3,13 +3,28 @@ package com.roshercs.screenmatch.models;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name="episodes")
 public class Episode {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
     private Integer season;
     private String title;
     private Integer episodeNum;
     private Double evaluation;
     private LocalDate realeseDate;
+    @ManyToOne 
+    private Serie serie;
+
+    public Episode(){}
     public Integer getSeason() {
         return season;
     }
@@ -40,6 +55,14 @@ public class Episode {
     public void setRealeseDate(LocalDate realeseDate) {
         this.realeseDate = realeseDate;
     }
+    
+    public Serie getSerie() {
+        return serie;
+    }
+    public void setSerie(Serie serie) {
+        this.serie = serie;
+    }
+
     public Episode(Integer season,DataEpisode data) {
         this.season = season;
         try {

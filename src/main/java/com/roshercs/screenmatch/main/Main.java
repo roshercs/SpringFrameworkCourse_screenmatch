@@ -13,11 +13,12 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 
-import com.roshercs.screenmatch.models.DataEpisode;
+//import com.roshercs.screenmatch.models.DataEpisode;
 import com.roshercs.screenmatch.models.DataSeason;
 import com.roshercs.screenmatch.models.DataSerie;
 import com.roshercs.screenmatch.models.Episode;
 import com.roshercs.screenmatch.models.Serie;
+import com.roshercs.screenmatch.models.SerieCategory;
 import com.roshercs.screenmatch.repository.SerieRepository;
 import com.roshercs.screenmatch.service.ConsumeAPI;
 import com.roshercs.screenmatch.service.DataConverter;
@@ -30,7 +31,7 @@ public class Main {
     private final String API_KEY="&apikey=22d40db";
     List<Serie> series;
 
-    private List<DataSerie> dataSeries=new ArrayList<>();
+    //private List<DataSerie> dataSeries=new ArrayList<>();
     private SerieRepository repository;
 
     public Main(SerieRepository repository) {
@@ -46,6 +47,10 @@ public class Main {
                     1. Search Serie
                     2. Search Episode
                     3. Show Searched Series
+                    4. Search Series by Title
+                    5. Top 5 Series
+                    6. Find by Category
+                    7. Find by Number of Seasons and Minimal Evaluation
                     0. Exit
                     """;
             System.out.println(menu);
@@ -60,6 +65,18 @@ public class Main {
                     break;
                 case 3:
                     showSearchedSeries();
+                    break;
+                case 4:
+                    searchSerieByTitle();
+                    break;
+                case 5:
+                    searchTopSeries();
+                    break;
+                case 6:
+                    searchSerieByCategory();
+                    break;
+                case 7:
+                    searchBySeasonsAndEvaluation();
                     break;
                 case 0:
                     System.out.println("Closing application...");
@@ -204,5 +221,62 @@ public class Main {
             .sorted(Comparator.comparing(Serie::getGenre))
             .forEach(System.out::println);
         */
+    }
+    private void searchSerieByTitle() {
+        System.out.println("\n\n\nType the name of serie to search:");
+        var serieName=keyboard.nextLine();
+        Optional<Serie> searchedSerie=repository.findBytitleContainsIgnoreCase(serieName);
+
+        if(searchedSerie.isPresent()){
+            System.out.println("The searched serie is: "+searchedSerie.get());
+        }else{
+            System.out.println("Serie not founded...");
+        }
+    }
+    private void searchTopSeries(){
+        List<Serie> topSeries= repository.findTop5ByOrderByEvaluationDesc();
+        topSeries.forEach(s -> System.out.println("Title: "+s.getTitle()+"  Evaluation: "+s.getEvaluation()));
+    }
+    private void searchSerieByCategory(){
+        System.out.println("\n\n\nType the genre to search:");
+        var category=keyboard.nextLine();
+        //List<Serie> seriesByCategory=repository.findByGenre(SerieCategory.fromSpanish(category));
+        List<Serie> seriesByCategory=repository.findByGenre(SerieCategory.fromString(category));
+        System.out.println("Series of category ("+category+"): ");
+        seriesByCategory.forEach(s -> System.out.println("Title: "+s.getTitle()+"  Genre: "+s.getGenre()+" Evaluation: "+ s.getEvaluation()));
+    }
+    private void searchBySeasonsAndEvaluation(){
+        //SQL Native
+        //List<Serie> seriesBySeasonsAndEvaluation=repository.seriesBySeasonsAndEvaluation();
+        //seriesBySeasonsAndEvaluation.forEach(s -> System.out.println("Title: "+s.getTitle()+"  Genre: "+s.getGenre()+"  Seasons: "+s.getSeasons()+ "  Evaluation: "+ s.getEvaluation()));
+        
+        //JPQL
+        System.out.println("Type the minimum number of seasons: ");
+        var seasons=keyboard.nextInt();
+        keyboard.nextLine();
+        System.out.println("Type the minimum rating: ");
+        var evaluation=keyboard.nextDouble();
+        keyboard.nextLine();
+
+        List<Serie> seriesBySeasonsAndEvaluation=repository.seriesBySeasonsAndEvaluation(seasons,evaluation);
+        seriesBySeasonsAndEvaluation.forEach(s -> System.out.println("Title: "+s.getTitle()+"  Genre: "+s.getGenre()+"  Seasons: "+s.getSeasons()+ "  Evaluation: "+ s.getEvaluation()));
+        if(seriesBySeasonsAndEvaluation.isEmpty())System.out.println("No series were fouund with minimal seasons ("+seasons+") and minimal rating ("+evaluation+")...");
+        else{
+            seriesBySeasonsAndEvaluation.forEach(s -> System.out.println("Title: "+s.getTitle()+"  Genre: "+s.getGenre()+"  Seasons: "+s.getSeasons()+ "  Evaluation: "+ s.getEvaluation()));
+        }
+
+        //DescribeQuery
+        /*System.out.println("Type the minimum number of seasons: ");
+        var seasons=keyboard.nextInt();
+        keyboard.nextLine();
+        System.out.println("Type the minimum rating: ");
+        var evaluation=keyboard.nextDouble();
+        keyboard.nextLine();
+        List<Serie> seriesBySeasonsAndEvaluation=repository.findBySeasonsGreaterThanAndEvaluationGreaterThan(seasons, evaluation);
+        if(seriesBySeasonsAndEvaluation.isEmpty())System.out.println("No series were fouund with minimal seasons ("+seasons+") and minimal rating ("+evaluation+")...");
+        else{
+            seriesBySeasonsAndEvaluation.forEach(s -> System.out.println("Title: "+s.getTitle()+"  Genre: "+s.getGenre()+"  Seasons: "+s.getSeasons()+ "  Evaluation: "+ s.getEvaluation()));
+        }*/
+
     }
 }

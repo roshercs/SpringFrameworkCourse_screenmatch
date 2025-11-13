@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import com.roshercs.screenmatch.models.Episode;
 import com.roshercs.screenmatch.models.Serie;
 import com.roshercs.screenmatch.models.SerieCategory;
 
@@ -21,4 +22,7 @@ public interface SerieRepository extends JpaRepository<Serie,Long>{
     //JPQL
     @Query(value = "select s from Serie s where s.seasons <= :seasons AND s.evaluation >= :evaluation",nativeQuery = false)
     List<Serie> seriesBySeasonsAndEvaluation(int seasons,Double evaluation);
+
+    @Query("select e from Serie s join s.episodes e WHERE e.title ILIKE %:episodeName%")
+    List<Episode> episodesByName(String episodeName); 
 }

@@ -51,6 +51,7 @@ public class Main {
                     5. Top 5 Series
                     6. Find by Category
                     7. Find by Number of Seasons and Minimal Evaluation
+                    8. Find Episode by Name
                     0. Exit
                     """;
             System.out.println(menu);
@@ -77,6 +78,9 @@ public class Main {
                     break;
                 case 7:
                     searchBySeasonsAndEvaluation();
+                    break;
+                case 8:
+                    searchEpisodebyName();
                     break;
                 case 0:
                     System.out.println("Closing application...");
@@ -278,5 +282,11 @@ public class Main {
             seriesBySeasonsAndEvaluation.forEach(s -> System.out.println("Title: "+s.getTitle()+"  Genre: "+s.getGenre()+"  Seasons: "+s.getSeasons()+ "  Evaluation: "+ s.getEvaluation()));
         }*/
 
+    }
+    private void searchEpisodebyName(){
+        System.out.println("Type the name of episodes to search:");
+        var episodeName=keyboard.nextLine();
+        List<Episode> episodes= repository.episodesByName(episodeName);
+        episodes.forEach(e -> System.out.printf("\n\nSerie: %s  Season: %s  Number: %s  Title: %s  Evaluation: %s",e.getSerie().getTitle(),e.getSeason(),e.getEpisodeNum(),e.getTitle(),e.getEvaluation()));
     }
 }

@@ -30,6 +30,7 @@ public class Main {
     private final String url_base="https://www.omdbapi.com/?t=";
     private final String API_KEY="&apikey=22d40db";
     List<Serie> series;
+    private Optional<Serie> searchedSerie;
 
     //private List<DataSerie> dataSeries=new ArrayList<>();
     private SerieRepository repository;
@@ -52,6 +53,7 @@ public class Main {
                     6. Find by Category
                     7. Find by Number of Seasons and Minimal Evaluation
                     8. Find Episode by Name
+                    9. Find top 5 episodes from a Serie
                     0. Exit
                     """;
             System.out.println(menu);
@@ -81,6 +83,9 @@ public class Main {
                     break;
                 case 8:
                     searchEpisodebyName();
+                    break;
+                case 9:
+                    searchTopEpisodes();
                     break;
                 case 0:
                     System.out.println("Closing application...");
@@ -229,7 +234,7 @@ public class Main {
     private void searchSerieByTitle() {
         System.out.println("\n\n\nType the name of serie to search:");
         var serieName=keyboard.nextLine();
-        Optional<Serie> searchedSerie=repository.findBytitleContainsIgnoreCase(serieName);
+        searchedSerie=repository.findBytitleContainsIgnoreCase(serieName);
 
         if(searchedSerie.isPresent()){
             System.out.println("The searched serie is: "+searchedSerie.get());
@@ -288,5 +293,15 @@ public class Main {
         var episodeName=keyboard.nextLine();
         List<Episode> episodes= repository.episodesByName(episodeName);
         episodes.forEach(e -> System.out.printf("\n\nSerie: %s  Season: %s  Number: %s  Title: %s  Evaluation: %s",e.getSerie().getTitle(),e.getSeason(),e.getEpisodeNum(),e.getTitle(),e.getEvaluation()));
+    }
+
+    private void searchTopEpisodes(){
+        searchSerieByTitle();
+        if(searchedSerie.isPresent()){
+            Serie serie=searchedSerie.get();
+            List<Episode> episodes=repository.top5EpisodesofSerie(serie);
+            System.out.println("Top episodes of serie "+serie.getTitle()+": ");
+            episodes.forEach(e -> System.out.printf("\tSeason: %s  Number: %s  Title: %s  Evaluation: %s\n",e.getSeason(),e.getEpisodeNum(),e.getTitle(),e.getEvaluation()));
+        }
     }
 }
